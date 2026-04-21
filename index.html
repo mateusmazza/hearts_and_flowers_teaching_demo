@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hearts &amp; Flowers — Executive Function Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       SCREEN 1: WELCOME
+  ============================================================ -->
+  <div id="screen-welcome" class="screen active">
+    <div class="screen-content center-content">
+      <div class="logo-row">
+        <span class="logo-heart">♥</span>
+        <span class="logo-flower">✿</span>
+      </div>
+      <h1>Hearts &amp; Flowers</h1>
+      <p class="subtitle">An Executive Function Demo</p>
+      <div class="info-card">
+        <p>In this task, you will play a game that psychologists use to measure
+        <strong>executive functioning</strong> in children and adults.</p>
+        <p>You will complete <strong>three short rounds</strong>, each testing a
+        different aspect of executive control.</p>
+        <div class="key-legend-row">
+          <div class="key-legend-item">
+            <kbd>A</kbd>
+            <span>= Left response</span>
+          </div>
+          <div class="key-legend-item">
+            <kbd>L</kbd>
+            <span>= Right response</span>
+          </div>
+        </div>
+        <p class="small-note">Keep your left index finger on <kbd>A</kbd> and your right index finger on <kbd>L</kbd> throughout the task.</p>
+      </div>
+      <button id="btn-start" class="btn-primary">Begin</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 2: BLOCK INTRO
+  ============================================================ -->
+  <div id="screen-block-intro" class="screen">
+    <div class="screen-content">
+      <div class="block-progress-bar">
+        <div class="block-step" id="bprog-0">Block 1</div>
+        <div class="block-step" id="bprog-1">Block 2</div>
+        <div class="block-step" id="bprog-2">Block 3</div>
+      </div>
+      <span id="block-intro-label" class="block-label-tag">Block 1 of 3</span>
+      <h2 id="block-intro-title">Hearts</h2>
+      <div id="block-rule-card" class="rule-card"></div>
+      <div class="key-legend-row">
+        <div class="key-legend-item">
+          <kbd>A</kbd><span>= Left</span>
+        </div>
+        <div class="key-legend-item">
+          <kbd>L</kbd><span>= Right</span>
+        </div>
+      </div>
+      <p class="practice-note">You will first do <strong>2 practice trials</strong>. You must get both correct before the real test begins.</p>
+      <button id="btn-practice" class="btn-primary">Start Practice</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 3: PRACTICE FAILED
+  ============================================================ -->
+  <div id="screen-practice-failed" class="screen">
+    <div class="screen-content center-content">
+      <div class="feedback-badge wrong">✗</div>
+      <h2>Not quite!</h2>
+      <p>You need to get <strong>both practice trials correct</strong> before moving on. Let's review the rule and try again.</p>
+      <div id="practice-rule-reminder" class="rule-card"></div>
+      <button id="btn-retry-practice" class="btn-primary">Try Again</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 4: PRACTICE PASSED
+  ============================================================ -->
+  <div id="screen-practice-passed" class="screen">
+    <div class="screen-content center-content">
+      <div class="feedback-badge correct">✓</div>
+      <h2>Nice work!</h2>
+      <p>You got both practice trials correct. Time for the real test — <strong>16 trials</strong>, no feedback this time.</p>
+      <p class="small-note">The rule is the same as in practice. Stay focused!</p>
+      <button id="btn-start-test" class="btn-primary">Start Test</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 5: TRIAL (shared for practice + test)
+  ============================================================ -->
+  <div id="screen-trial" class="screen">
+    <div id="trial-header">
+      <span id="trial-phase-label" class="phase-label">PRACTICE</span>
+      <span id="trial-progress">Trial 1 / 2</span>
+    </div>
+
+    <div id="trial-arena">
+      <!-- Fixation cross -->
+      <div id="fixation">+</div>
+
+      <!-- Stimulus display -->
+      <div id="stimuli" style="display:none">
+        <div id="stimulus-left" class="stimulus-slot"></div>
+        <div id="stimulus-divider"></div>
+        <div id="stimulus-right" class="stimulus-slot"></div>
+      </div>
+
+      <!-- Practice feedback overlay -->
+      <div id="trial-feedback-display" style="display:none"></div>
+    </div>
+
+    <!-- Key hints -->
+    <div id="trial-key-bar">
+      <div class="key-hint" id="key-a">
+        <kbd>A</kbd>
+        <span>LEFT</span>
+      </div>
+      <div id="trial-rule-reminder"></div>
+      <div class="key-hint" id="key-l">
+        <kbd>L</kbd>
+        <span>RIGHT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 6: BLOCK RESULTS + QUIZ (combined)
+  ============================================================ -->
+  <div id="screen-block-results" class="screen">
+    <div class="screen-content">
+      <span id="results-block-label" class="block-label-tag"></span>
+      <h2 id="results-block-title"></h2>
+
+      <!-- Performance stats -->
+      <div id="results-stats"></div>
+
+      <!-- Quiz -->
+      <div id="results-quiz">
+        <h3 class="quiz-prompt">What do you think this block primarily measured?</h3>
+        <div id="results-quiz-options" class="quiz-options-grid"></div>
+      </div>
+
+      <!-- Explanation — hidden until quiz answered -->
+      <div id="results-explanation" style="display:none">
+        <div id="results-quiz-feedback" class="quiz-feedback-box"></div>
+        <div id="results-deep-explanation" class="deep-explanation"></div>
+        <button id="btn-next-block" class="btn-primary">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 7: FINAL SUMMARY
+  ============================================================ -->
+  <div id="screen-final-summary" class="screen">
+    <div class="screen-content">
+      <h2>Your Results</h2>
+      <div id="final-comparison-table"></div>
+      <div id="final-effects"></div>
+      <div id="final-explanation"></div>
+      <button class="btn-secondary" onclick="location.reload()">Play Again</button>
+    </div>
+  </div>
+
+  <script src="task.js"></script>
+</body>
+</html>
