@@ -39,13 +39,13 @@ const BLOCKS = [
       '&#9829; same side &nbsp;&bull;&nbsp; <kbd>A</kbd>&nbsp;=&nbsp;Left &nbsp;&nbsp; <kbd>L</kbd>&nbsp;=&nbsp;Right',
     quizCorrect: 'attention',
     quizCorrectMsg:
-      'Correct! The Hearts block is the <strong>congruent</strong> condition: the correct key is always on the same side as the stimulus. This measures your baseline <strong>attention and processing speed</strong>, with no conflicting demands.',
+      '🎉 Yes! No tricks here &mdash; you just pressed the matching side. That&rsquo;s basic <strong>attention</strong>. This gives us your baseline speed.',
     quizWrongMsg:
-      'Not quite &mdash; the answer is <strong>Attention</strong>. Here there is no conflict: you simply match your key to the side the heart appears on. That makes it a measure of basic attention and stimulus-response speed, not inhibition or flexibility.',
+      '💡 Not quite &mdash; it&rsquo;s <strong>Attention</strong>. The heart always goes with the matching key. No conflict, no switching &mdash; just focus and respond.',
     statsIntro:
-      'In the Hearts block you matched your key to the side the heart appeared on.',
+      'You matched your key to the side the heart appeared on.',
     statsExplanation:
-      'This is the <strong>congruent condition</strong> of the Hearts &amp; Flowers task. There is no cognitive conflict &mdash; the correct response always aligns with the stimulus. Performance here reflects baseline <strong>attention and processing speed</strong>. In children, this improves steadily with age as basic neural processing becomes faster and more reliable.',
+      'No conflict here &mdash; just match and respond! This gives us your <strong>baseline speed</strong>. In children, this gets faster every year as their brain matures and they get better at paying attention.',
   },
   {
     index: 1,
@@ -76,13 +76,13 @@ const BLOCKS = [
       '&#10047; opposite side &nbsp;&bull;&nbsp; <kbd>A</kbd>&nbsp;=&nbsp;Left &nbsp;&nbsp; <kbd>L</kbd>&nbsp;=&nbsp;Right',
     quizCorrect: 'inhibitory-control',
     quizCorrectMsg:
-      'Correct! The Flowers block measures <strong>inhibitory control</strong> &mdash; you had to suppress the automatic impulse to press the same side as the flower and instead select the opposite key. This conflict between impulse and rule is the hallmark of inhibitory control.',
+      '🎉 Exactly! You had to fight the urge to press the same side and do the <em>opposite</em>. That mental tug-of-war is <strong>inhibitory control</strong>!',
     quizWrongMsg:
-      'Not quite &mdash; the answer is <strong>Inhibitory Control</strong>. You had to override the &ldquo;natural&rdquo; response (same side as the stimulus) and choose the opposite. Suppressing that automatic impulse is exactly what inhibitory control means. Children&rsquo;s inhibitory control develops rapidly between ages 3 and 8.',
+      '💡 It&rsquo;s <strong>Inhibitory Control</strong>. Pressing the opposite side feels wrong &mdash; your brain wants to match. Fighting that impulse is inhibitory control. Young children find this really hard!',
     statsIntro:
-      'In the Flowers block you had to press the key on the <em>opposite</em> side from the flower &mdash; fighting the impulse to press the same side.',
+      'You had to press the <em>opposite</em> side &mdash; fighting the urge to press the same side.',
     statsExplanation:
-      'This is the <strong>incongruent condition</strong>. The conflict between where the stimulus appeared and where the correct key is requires active <strong>inhibitory control</strong> &mdash; suppressing the automatic same-side response. The extra reaction time compared to the Hearts block is called the <strong>Simon Effect</strong>, and it quantifies the cognitive cost of inhibition. Children show much larger Simon Effects than adults because their prefrontal cortex is still maturing.',
+      'Your brain wants to press the same side as the flower &mdash; but the rule says opposite! Stopping yourself from doing the automatic thing is <strong>inhibitory control</strong>. The extra time you took compared to Hearts? That&rsquo;s the <strong>Simon Effect</strong> &mdash; the measurable cost of inhibition.',
   },
   {
     index: 2,
@@ -115,13 +115,13 @@ const BLOCKS = [
       '&#9829; same side &nbsp;&bull;&nbsp; &#10047; opposite side &nbsp;&bull;&nbsp; <kbd>A</kbd>&nbsp;=&nbsp;Left &nbsp;&nbsp; <kbd>L</kbd>&nbsp;=&nbsp;Right',
     quizCorrect: 'cognitive-flexibility',
     quizCorrectMsg:
-      'Correct! The Mixed block measures <strong>cognitive flexibility</strong> &mdash; switching between two different response rules on every trial. The extra time on trials where the stimulus type changed (hearts &harr; flowers) is the &ldquo;switch cost,&rdquo; and it directly quantifies the effort of mental set-shifting.',
+      '🎉 Yes! Every time the shape changed, you had to swap rules on the fly. That gear-shift is <strong>cognitive flexibility</strong> &mdash; and the slowdown on those trials is the switch cost!',
     quizWrongMsg:
-      'Not quite &mdash; the answer is <strong>Cognitive Flexibility</strong>. When the stimulus type changed (e.g., heart &rarr; flower), you had to reconfigure your entire response rule. The extra time on those &ldquo;switch trials&rdquo; is the switch cost &mdash; the most direct measure of cognitive flexibility. This continues developing well into adolescence.',
+      '💡 It&rsquo;s <strong>Cognitive Flexibility</strong>. When the shape switched (heart &rarr; flower or vice versa), your brain had to reload the rule. That mental gear-shift is the hardest EF to develop &mdash; it keeps improving into your 20s!',
     statsIntro:
-      'In the Mixed block you applied both rules and switched between them unpredictably.',
+      'You had to juggle both rules and switch between them on every trial.',
     statsExplanation:
-      'This block measures <strong>cognitive flexibility</strong> &mdash; the ability to update and switch between mental task sets on the fly. When the stimulus type changed, you had to reconfigure your response rule mid-stream. The <strong>switch cost</strong> (extra RT and lower accuracy on switch trials vs. non-switch trials) directly quantifies the cognitive effort of set-shifting. Cognitive flexibility is one of the last executive functions to mature, continuing to develop into early adulthood.',
+      'Every time the shape changed, your brain had to reload a different rule. The slower &ldquo;switch trials&rdquo; vs. &ldquo;non-switch trials&rdquo; gives us the <strong>switch cost</strong> &mdash; the direct measure of <strong>cognitive flexibility</strong>. This is the last EF skill to fully mature, still developing in teenagers and young adults.',
   },
 ];
 
@@ -208,6 +208,16 @@ function setKeyHandler(fn) {
   if (S.keyHandler) document.removeEventListener('keydown', S.keyHandler);
   S.keyHandler = fn || null;
   if (S.keyHandler) document.addEventListener('keydown', S.keyHandler);
+}
+
+// Register spacebar as trigger for a one-shot action.
+function onSpace(fn) {
+  setKeyHandler((e) => {
+    if (e.code !== 'Space' && e.key !== ' ') return;
+    e.preventDefault();
+    setKeyHandler(null);
+    fn();
+  });
 }
 
 function clearTrialTimers() {
@@ -300,9 +310,10 @@ function updateBlockProgress(currentIdx) {
 // WELCOME
 // ============================================================
 function showWelcome() {
-  setKeyHandler(null);
   showScreen('screen-welcome');
-  el('btn-start').onclick = () => showBlockIntro(0);
+  const go = () => showBlockIntro(0);
+  el('btn-start').onclick = go;
+  onSpace(go);
 }
 
 // ============================================================
@@ -323,7 +334,9 @@ function showBlockIntro(blockIdx) {
   el('block-rule-card').style.borderLeftColor = b.color;
 
   showScreen('screen-block-intro');
-  el('btn-practice').onclick = () => beginPractice();
+  const go = () => beginPractice();
+  el('btn-practice').onclick = go;
+  onSpace(go);
 }
 
 // ============================================================
@@ -445,13 +458,17 @@ function endPractice() {
   const allCorrect = S.practiceResults.every(r => r.correct);
   if (allCorrect) {
     showScreen('screen-practice-passed');
-    el('btn-start-test').onclick = () => beginTest();
+    const go = () => beginTest();
+    el('btn-start-test').onclick = go;
+    onSpace(go);
   } else {
     const b = BLOCKS[S.blockIndex];
     el('practice-rule-reminder').innerHTML         = b.ruleHTML;
     el('practice-rule-reminder').style.borderLeftColor = b.color;
     showScreen('screen-practice-failed');
-    el('btn-retry-practice').onclick = () => beginPractice();
+    const retry = () => beginPractice();
+    el('btn-retry-practice').onclick = retry;
+    onSpace(retry);
   }
 }
 
@@ -670,13 +687,16 @@ function handleQuiz(chosenId, b) {
   const blockIdx = b.index;
   const nextIdx  = blockIdx + 1;
   const nextBtn  = el('btn-next-block');
+  let advanceFn;
   if (nextIdx < BLOCKS.length) {
-    nextBtn.textContent = `Continue to Block ${nextIdx + 1}: ${BLOCKS[nextIdx].name} →`;
-    nextBtn.onclick = () => showBlockIntro(nextIdx);
+    nextBtn.innerHTML = `Press <kbd>SPACE</kbd> to continue`;
+    advanceFn = () => showBlockIntro(nextIdx);
   } else {
-    nextBtn.textContent = 'See Final Summary →';
-    nextBtn.onclick = () => showFinalSummary();
+    nextBtn.innerHTML = `Press <kbd>SPACE</kbd> for final results`;
+    advanceFn = () => showFinalSummary();
   }
+  nextBtn.onclick = advanceFn;
+  onSpace(advanceFn);
 
   el('results-explanation').style.display = 'block';
   setTimeout(
@@ -754,28 +774,21 @@ function showFinalSummary() {
 
   el('final-explanation').innerHTML = `
     <div class="final-explanation-box">
-      <h3>What does this tell us about Executive Function?</h3>
-      <p><strong>Executive functions (EF)</strong> are a family of top-down mental processes
-      that let us plan, sustain attention, hold instructions in mind, and switch flexibly between tasks.
-      They are primarily supported by the <strong>prefrontal cortex</strong> &mdash; one of the last
-      brain regions to fully mature, a process that continues well into the mid-20s.</p>
-      <p>The Hearts &amp; Flowers task isolates three core EF components:</p>
+      <h3>So what is Executive Function?</h3>
+      <p><strong>Executive functions (EF)</strong> are the mental skills that let us focus,
+      follow rules, stop ourselves from doing the wrong thing, and switch between tasks.
+      They live in the <strong>prefrontal cortex</strong> &mdash; the last part of the brain to
+      fully mature (this keeps going until your mid-20s!).</p>
       <ul>
-        <li><strong>Attention</strong> (Hearts): Baseline stimulus-response processing &mdash;
-            how fast and reliably you respond when there is no cognitive conflict.</li>
-        <li><strong>Inhibitory Control</strong> (Flowers): Suppressing the dominant, automatic
-            response &mdash; reflected here by a Simon Effect of <strong>${fmtSgn(simonEffect)}</strong>.</li>
-        <li><strong>Cognitive Flexibility</strong> (Mixed): Switching between rules on the fly
-            &mdash; reflected by a switch cost of <strong>${fmtSgn(switchCost)}</strong>.</li>
+        <li>❤️ <strong>Attention</strong>: your baseline speed &mdash; no tricks involved.</li>
+        <li>✿ <strong>Inhibitory Control</strong>: fighting the automatic response.
+            Your Simon Effect: <strong>${fmtSgn(simonEffect)}</strong>.</li>
+        <li>🔀 <strong>Cognitive Flexibility</strong>: switching rules on the fly.
+            Your switch cost: <strong>${fmtSgn(switchCost)}</strong>.</li>
       </ul>
-      <p>In children, all three components improve with age but at different rates. Inhibitory
-      control develops rapidly in the preschool years (ages 3&ndash;5), while cognitive flexibility
-      continues to mature through adolescence. Young children show much larger Simon Effects and
-      switch costs than adults &mdash; a direct window into the ongoing development of their
-      prefrontal cortex.</p>
-      <p class="attribution">Based on: Davidson, M.&thinsp;C., Amso, D., Anderson, L.&thinsp;C.,
-      &amp; Diamond, A. (2006). Development of cognitive control and executive functions from 4
-      to 13 years. <em>Neuropsychologia, 44</em>(11), 2037&ndash;2078.</p>
+      <p>Children show much bigger Simon Effects and switch costs than adults. As the
+      prefrontal cortex matures, these costs shrink &mdash; that&rsquo;s EF development in action!</p>
+      <p class="attribution">Davidson et al. (2006). <em>Neuropsychologia, 44</em>(11), 2037&ndash;2078.</p>
     </div>`;
 
   showScreen('screen-final-summary');
