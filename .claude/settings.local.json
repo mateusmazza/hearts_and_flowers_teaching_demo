@@ -6,7 +6,10 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(node --check \"/Users/mazzafe/Library/CloudStorage/OneDrive-Personal/Stanford/Teaching/Psych One/Demo/task.js\")",
+      "Bash(node *)",
+      "Bash(open *)"
     ]
   }
 }

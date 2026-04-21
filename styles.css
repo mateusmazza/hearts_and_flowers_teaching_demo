@@ -1060,6 +1060,148 @@ table.comparison-table .row-mixed td:first-child {
   margin-top: 0.5rem;
 }
 
+/* ── Stimulus characters ──────────────────────────────────────── */
+.stim-char {
+  font-size: 120px;
+  line-height: 1;
+  display: block;
+  user-select: none;
+}
+
+.stim-heart  { color: var(--color-heart);  }
+.stim-flower { color: var(--color-flower); }
+
+/* Small stimulus used in rule cards */
+.stim-sm {
+  font-size: 1.15em;
+  line-height: 1;
+  display: inline;
+  margin-right: 0.15em;
+}
+
+/* Inline text color helpers used in rule HTML */
+.color-heart  { color: var(--color-heart);  }
+.color-flower { color: var(--color-flower); }
+
+/* ── Rule card inner layout ───────────────────────────────────── */
+.rule-icon {
+  font-size: 2.8rem;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.rule-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #f7f9fc;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin: 0.75rem 0;
+}
+
+.rule-ex {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.rule-ex em {
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
+
+.rule-summary {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: rgba(0,0,0,0.03);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+/* ── Quiz feedback header states ─────────────────────────────── */
+.quiz-fb-header.fb-correct {
+  color: var(--color-success);
+  font-size: 1.05rem;
+  font-weight: 700;
+  gap: 0.5rem;
+}
+
+.quiz-fb-header.fb-wrong {
+  color: #d68910;
+  font-size: 1.05rem;
+  font-weight: 700;
+  gap: 0.5rem;
+}
+
+/* ── Simon Effect highlight bar ──────────────────────────────── */
+.effect-highlight {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: #fff8e1;
+  border: 1px solid #f9c74f;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-size: 0.92rem;
+  margin-top: 0.5rem;
+}
+
+.effect-label {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.effect-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #b7770d;
+}
+
+.effect-desc {
+  color: var(--color-text-muted);
+  font-size: 0.87rem;
+}
+
+/* ── Effect card title ────────────────────────────────────────── */
+.effect-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.3rem;
+}
+
+/* ── Switch cost card (highlighted total) ────────────────────── */
+.cost-card {
+  background: linear-gradient(135deg, #eaf4fd 0%, #daeefa 100%);
+  border: 1px solid #b8d9f0;
+}
+
+.cost-card .stat-value {
+  color: var(--color-mixed) !important;
+}
+
+/* ── Switch cost explainer text ──────────────────────────────── */
+.switch-cost-explainer {
+  font-size: 0.87rem;
+  color: var(--color-text-muted);
+  margin: 0.25rem 0 0.75rem;
+  line-height: 1.55;
+}
+
+/* ── Results intro text ──────────────────────────────────────── */
+.results-intro-text {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+  line-height: 1.55;
+}
+
 /* ── Utility helpers ──────────────────────────────────────────── */
 .text-heart   { color: var(--color-heart); }
 .text-flower  { color: var(--color-flower); }
