@@ -1311,3 +1311,184 @@ table.comparison-table .row-mixed td:first-child {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Portrait orientation warning ────────────────────────────── */
+.portrait-warning {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(145deg, #fff0fa 0%, #f0f0ff 50%, #f0fff8 100%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  gap: 1.5rem;
+}
+
+@media (orientation: portrait) {
+  body.touch-mode .portrait-warning {
+    display: flex;
+  }
+}
+
+.portrait-warning-icon {
+  font-size: 4rem;
+  animation: pulse 1.8s ease-in-out infinite;
+  color: #9b59b6;
+  line-height: 1;
+}
+
+.portrait-warning p {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ── Touch mode: hide keyboard-specific elements ─────────────── */
+body.touch-mode .key-legend-row { display: none; }
+body.touch-mode .small-note     { display: none; }
+body.touch-mode .rule-ex em     { display: none; }
+body.touch-mode #trial-key-bar  { display: none; }
+
+/* ── Touch response bar ──────────────────────────────────────── */
+#trial-touch-bar {
+  display: none;
+  width: 100%;
+  flex-shrink: 0;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 80px;
+  border-top: 2px solid rgba(180, 120, 200, 0.15);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+body.touch-mode #trial-touch-bar {
+  display: flex;
+}
+
+.touch-response-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  background: #6c5ce7;
+  border: none;
+  border-radius: 0;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+#touch-btn-left  { border-right: 1px solid rgba(255, 255, 255, 0.25); }
+#touch-btn-right { border-left:  1px solid rgba(255, 255, 255, 0.25); }
+
+.touch-response-btn:not(:disabled):active,
+.touch-response-btn.pressed {
+  background: #5a4ec4;
+  transform: scale(0.97);
+}
+
+.touch-response-btn:disabled {
+  background: #b0b8c4;
+  cursor: default;
+}
+
+.touch-btn-arrow {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.touch-rule-text {
+  flex: 0 0 auto;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.4;
+  background: rgba(255, 255, 255, 0.97);
+  border-left:  1px solid rgba(180, 120, 200, 0.15);
+  border-right: 1px solid rgba(180, 120, 200, 0.15);
+}
+
+/* ── Landscape mobile: compact the trial screen ──────────────── */
+@media (max-height: 500px) and (orientation: landscape) {
+  #trial-arena {
+    padding: 0.6rem;
+  }
+
+  #fixation,
+  #stimuli,
+  #trial-feedback-display {
+    height: 170px;
+  }
+
+  .stim-char {
+    font-size: 90px;
+  }
+
+  #trial-header {
+    min-height: 40px;
+    padding: 0.4rem 1.25rem;
+  }
+
+  body.touch-mode #trial-touch-bar {
+    min-height: 68px;
+  }
+
+  body.touch-mode .touch-response-btn {
+    font-size: 1.05rem;
+  }
+
+  body.touch-mode .touch-rule-text {
+    font-size: 0.62rem;
+    width: 68px;
+  }
+}
+
+/* ── Landscape mobile: compact non-trial screens ─────────────── */
+@media (max-height: 500px) {
+  .screen-content.center-content {
+    min-height: unset;
+    padding: 0.75rem 1rem;
+    justify-content: flex-start;
+  }
+
+  .screen-content {
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .logo-heart, .logo-flower {
+    font-size: 48px;
+  }
+
+  #screen-welcome h1 {
+    font-size: 1.6rem;
+  }
+
+  .info-card {
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .feedback-badge {
+    width: 56px;
+    height: 56px;
+    font-size: 1.6rem;
+  }
+}

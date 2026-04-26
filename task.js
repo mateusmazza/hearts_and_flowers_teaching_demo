@@ -1,4 +1,5 @@
 'use strict';
+const TOUCH = window.matchMedia('(pointer: coarse)').matches;
 
 // ============================================================
 // STIMULUS RENDERING
@@ -37,6 +38,7 @@ const BLOCKS = [
     practiceRuleCompact: '&#9829; Heart &rarr; press the key on the <strong>SAME&nbsp;side</strong>',
     testRuleCompact:
       '&#9829; same side &nbsp;&bull;&nbsp; <kbd>A</kbd>&nbsp;=&nbsp;Left &nbsp;&nbsp; <kbd>L</kbd>&nbsp;=&nbsp;Right',
+    touchRuleHint: '&#9829; same side',
     quizCorrect: 'attention',
     quizCorrectMsg:
       '🎉 Yes! No tricks here &mdash; you just pressed the matching side. That&rsquo;s basic <strong>attention</strong>. This gives us your baseline speed.',
@@ -74,6 +76,7 @@ const BLOCKS = [
     practiceRuleCompact: '&#10047; Flower &rarr; press the key on the <strong>OPPOSITE&nbsp;side</strong>',
     testRuleCompact:
       '&#10047; opposite side &nbsp;&bull;&nbsp; <kbd>A</kbd>&nbsp;=&nbsp;Left &nbsp;&nbsp; <kbd>L</kbd>&nbsp;=&nbsp;Right',
+    touchRuleHint: '&#10047; opposite side',
     quizCorrect: 'inhibitory-control',
     quizCorrectMsg:
       '🎉 Exactly! You had to fight the urge to press the same side and do the <em>opposite</em>. That mental tug-of-war is <strong>inhibitory control</strong>!',
@@ -113,6 +116,7 @@ const BLOCKS = [
       '&#9829; Heart &rarr; same side &nbsp;&bull;&nbsp; &#10047; Flower &rarr; opposite side',
     testRuleCompact:
       '&#9829; same side &nbsp;&bull;&nbsp; &#10047; opposite side &nbsp;&bull;&nbsp; <kbd>A</kbd>&nbsp;=&nbsp;Left &nbsp;&nbsp; <kbd>L</kbd>&nbsp;=&nbsp;Right',
+    touchRuleHint: '&#9829; same &nbsp;&bull;&nbsp; &#10047; opposite',
     quizCorrect: 'cognitive-flexibility',
     quizCorrectMsg:
       '🎉 Yes! Every time the shape changed, you had to swap rules on the fly. That gear-shift is <strong>cognitive flexibility</strong> &mdash; and the slowdown on those trials is the switch cost!',
@@ -235,6 +239,13 @@ function correctKey(stimType, stimSide) {
   return correctSide === 'left' ? 'a' : 'l';
 }
 
+function adaptRuleHTML(html) {
+  if (!TOUCH) return html;
+  return html
+    .replace(/<kbd>A<\/kbd>/g, '<strong>LEFT</strong>')
+    .replace(/<kbd>L<\/kbd>/g, '<strong>RIGHT</strong>');
+}
+
 function enforceMaxRun(trials, keyFn, max) {
   for (let attempt = 0; attempt < 500; attempt++) {
     let ok = true;
@@ -311,6 +322,7 @@ function updateBlockProgress(currentIdx) {
 // ============================================================
 function showWelcome() {
   showScreen('screen-welcome');
+  if (TOUCH) el('btn-start').textContent = 'Tap to begin';
   const go = () => showBlockIntro(0);
   el('btn-start').onclick = go;
   onSpace(go);
@@ -330,10 +342,11 @@ function showBlockIntro(blockIdx) {
   el('block-intro-label').style.background = b.color;
   el('block-intro-title').textContent = b.name;
   el('block-intro-title').style.color = b.color;
-  el('block-rule-card').innerHTML = b.ruleHTML;
+  el('block-rule-card').innerHTML = adaptRuleHTML(b.ruleHTML);
   el('block-rule-card').style.borderLeftColor = b.color;
 
   showScreen('screen-block-intro');
+  if (TOUCH) el('btn-practice').textContent = 'Tap to start practice';
   const go = () => beginPractice();
   el('btn-practice').onclick = go;
   onSpace(go);
@@ -358,6 +371,7 @@ function runPracticeTrial() {
   el('trial-phase-label').textContent  = 'PRACTICE';
   el('trial-phase-label').className    = 'phase-label practice';
   el('trial-rule-reminder').innerHTML  = b.practiceRuleCompact;
+  if (TOUCH) el('touch-rule-text').innerHTML = b.touchRuleHint;
 
   showScreen('screen-trial');
   beginFixation(trial, true);
@@ -368,6 +382,10 @@ function beginFixation(trial, isPractice) {
   el('stimuli').style.display              = 'none';
   el('trial-feedback-display').style.display = 'none';
   setKeyHandler(null);
+  if (TOUCH) {
+    el('touch-btn-left').disabled  = true;
+    el('touch-btn-right').disabled = true;
+  }
 
   S.fixationId = setTimeout(() => presentStimulus(trial, isPractice), 500);
 }
@@ -393,12 +411,24 @@ function presentStimulus(trial, isPractice) {
     clearTimeout(S.timeoutId);
     processResponse(k, trial, isPractice);
   });
+
+  if (TOUCH) {
+    const bl = el('touch-btn-left'), br = el('touch-btn-right');
+    bl.disabled = false; br.disabled = false;
+    bl.onclick = () => { if (!S.responseGiven) { clearTimeout(S.timeoutId); processResponse('a', trial, isPractice); } };
+    br.onclick = () => { if (!S.responseGiven) { clearTimeout(S.timeoutId); processResponse('l', trial, isPractice); } };
+  }
 }
 
 function processResponse(key, trial, isPractice) {
   if (S.responseGiven) return;
   S.responseGiven = true;
   setKeyHandler(null);
+  if (TOUCH) {
+    const bl = el('touch-btn-left'), br = el('touch-btn-right');
+    bl.disabled = true; bl.onclick = null;
+    br.disabled = true; br.onclick = null;
+  }
 
   const rt      = key !== null ? Math.round(performance.now() - S.trialStart) : 2000;
   const ck      = correctKey(trial.stimType, trial.stimSide);
@@ -430,12 +460,23 @@ function processResponse(key, trial, isPractice) {
 
 function flashKey(keyId) {
   const elem = el(keyId);
-  elem.classList.add('pressed');
-  setTimeout(() => elem.classList.remove('pressed'), 200);
+  if (elem) {
+    elem.classList.add('pressed');
+    setTimeout(() => elem.classList.remove('pressed'), 200);
+  }
+  if (TOUCH) {
+    const touchEl = keyId === 'key-a' ? el('touch-btn-left') : el('touch-btn-right');
+    if (touchEl) {
+      touchEl.classList.add('pressed');
+      setTimeout(() => touchEl.classList.remove('pressed'), 200);
+    }
+  }
 }
 
 function showTrialFeedback(correct, ck, callback) {
-  const correctLabel = ck === 'a' ? 'A (Left)' : 'L (Right)';
+  const correctLabel = TOUCH
+    ? (ck === 'a' ? 'LEFT' : 'RIGHT')
+    : (ck === 'a' ? 'A (Left)' : 'L (Right)');
   const fb = el('trial-feedback-display');
   fb.innerHTML = correct
     ? `<div class="feedback-correct"><span class="feedback-icon">&#10003;</span><span>Correct!</span></div>`
@@ -458,14 +499,16 @@ function endPractice() {
   const allCorrect = S.practiceResults.every(r => r.correct);
   if (allCorrect) {
     showScreen('screen-practice-passed');
+    if (TOUCH) el('btn-start-test').textContent = 'Tap to start the test';
     const go = () => beginTest();
     el('btn-start-test').onclick = go;
     onSpace(go);
   } else {
     const b = BLOCKS[S.blockIndex];
-    el('practice-rule-reminder').innerHTML         = b.ruleHTML;
+    el('practice-rule-reminder').innerHTML = adaptRuleHTML(b.ruleHTML);
     el('practice-rule-reminder').style.borderLeftColor = b.color;
     showScreen('screen-practice-failed');
+    if (TOUCH) el('btn-retry-practice').textContent = 'Tap to try again';
     const retry = () => beginPractice();
     el('btn-retry-practice').onclick = retry;
     onSpace(retry);
@@ -491,6 +534,7 @@ function runTestTrial() {
   el('trial-phase-label').textContent = 'TEST';
   el('trial-phase-label').className   = 'phase-label test';
   el('trial-rule-reminder').innerHTML = b.testRuleCompact;
+  if (TOUCH) el('touch-rule-text').innerHTML = b.touchRuleHint;
 
   showScreen('screen-trial');
   beginFixation(trial, false);
@@ -689,10 +733,10 @@ function handleQuiz(chosenId, b) {
   const nextBtn  = el('btn-next-block');
   let advanceFn;
   if (nextIdx < BLOCKS.length) {
-    nextBtn.innerHTML = `Press <kbd>SPACE</kbd> to continue`;
+    nextBtn.innerHTML = TOUCH ? 'Tap to continue' : 'Press <kbd>SPACE</kbd> to continue';
     advanceFn = () => showBlockIntro(nextIdx);
   } else {
-    nextBtn.innerHTML = `Press <kbd>SPACE</kbd> for final results`;
+    nextBtn.innerHTML = TOUCH ? 'Tap for final results' : 'Press <kbd>SPACE</kbd> for final results';
     advanceFn = () => showFinalSummary();
   }
   nextBtn.onclick = advanceFn;
@@ -799,5 +843,6 @@ function showFinalSummary() {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.toggle('touch-mode', TOUCH);
   showWelcome();
 });
