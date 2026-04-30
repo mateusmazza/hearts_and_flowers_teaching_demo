@@ -14,6 +14,14 @@ After each block, students see their reaction times and accuracy, answer a multi
 
 The final screen shows a comparison across all three blocks, including the **Simon Effect** (inhibitory control cost) and the **Switch Cost** (cognitive flexibility cost).
 
+## Quick access
+
+Scan the QR code below to open the demo on your phone or tablet:
+
+<p align="center">
+  <img src="QR%20code.png" alt="QR code linking to GitHub Pages demo" width="250">
+</p>
+
 ## How to run
 
 No installation required. Just open `index.html` in any modern browser (Chrome, Firefox, Safari, Edge).
